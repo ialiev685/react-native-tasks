@@ -5,16 +5,19 @@ import {
   Keyboard,
   ImageBackground,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 //шрифты
 
 import { useFonts } from "expo-font";
 //form
-import { RegistrationScreen } from "./RegistrationScreen/RegistrationScreen";
+import { RegistrationScreen } from "./Screens/RegistrationScreen";
 
 export default function App() {
-  const [isReady, setIsReady] = useState(false);
+  const [hasFocus, setHasFocus] = useState(false);
+
   const [loaded] = useFonts({
     "Roboto-Regular": require("./fonts/Roboto/Roboto-Regular.ttf"),
     "Roboto-Medium": require("./fonts/Roboto/Roboto-Medium.ttf"),
@@ -23,14 +26,6 @@ export default function App() {
 
   if (!loaded) {
     return null;
-    // return (
-    //   <AppLoading
-    //     startAsync={loadFonts}
-    //     onFinish={() => setIsReady(true)}
-    //     onError={console.warn}
-    //   />
-
-    // );
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -39,7 +34,11 @@ export default function App() {
           source={require("./images/rock-bg.png")}
           style={style.image}
         >
-          <RegistrationScreen />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : ""}
+          >
+            <RegistrationScreen onFocus={hasFocus} />
+          </KeyboardAvoidingView>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -49,12 +48,13 @@ export default function App() {
 const style = StyleSheet.create({
   image: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-end",
+
     resizeMode: "cover",
     minWidth: 320,
-    minHeight: 812,
   },
   container: {
     flex: 1,
+    justifyContent: "flex-end",
   },
 });
