@@ -4,22 +4,14 @@ import React, { useState, useEffect } from "react";
 import { ButtonSubmit } from "../../components/ButtonSubmit";
 
 const initFocus = {
-  login: "#E8E8E8",
   email: "#E8E8E8",
   password: "#E8E8E8",
 };
 
-const initData = {
-  login: "",
-  email: "",
-  password: "",
-};
-
-export const RegistrationScreen = () => {
+export const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [changeBorder, setChangeBorder] = useState(initFocus);
   const [hasFocus, setHasFocus] = useState(false);
-  const [data, setData] = useState(initData);
 
   useEffect(() => {
     Keyboard.addListener("keyboardDidHide", handleHideKeyboard);
@@ -41,36 +33,15 @@ export const RegistrationScreen = () => {
     setChangeBorder((prevState) => ({ ...prevState, ...key }));
   };
 
-  const handleSubmit = () => {
-    Keyboard.dismiss();
-    setHasFocus(false);
-    console.log(data);
-  };
-
   return (
     <View
       style={{
         ...style.form,
-        paddingTop: hasFocus ? 92 : 92,
-        paddingBottom: hasFocus ? 32 : 78,
+        paddingBottom: hasFocus ? 32 : 111,
       }}
     >
-      <Text style={style.form__title}>Регистрация</Text>
+      <Text style={style.form__title}>Войти</Text>
 
-      <TextInput
-        style={{
-          ...style.form__input,
-          borderColor: changeBorder.login,
-        }}
-        autoComplete="off"
-        placeholder="Логин"
-        onFocus={() => hanlerFocus({ login: "#FF6C00" })}
-        onBlur={() => hanlerFocus({ login: "#E8E8E8" })}
-        value={data.login}
-        onChangeText={(value) =>
-          setData((prevState) => ({ ...prevState, login: value }))
-        }
-      />
       <TextInput
         style={{
           ...style.form__input,
@@ -80,10 +51,6 @@ export const RegistrationScreen = () => {
         onFocus={() => hanlerFocus({ email: "#FF6C00" })}
         onBlur={() => hanlerFocus({ email: "#E8E8E8" })}
         placeholder="Адрес электронной почты"
-        value={data.email}
-        onChangeText={(value) =>
-          setData((prevState) => ({ ...prevState, email: value }))
-        }
       />
 
       <View
@@ -99,10 +66,6 @@ export const RegistrationScreen = () => {
           secureTextEntry={!showPassword}
           onFocus={() => hanlerFocus({ password: "#FF6C00" })}
           onBlur={() => hanlerFocus({ password: "#E8E8E8" })}
-          value={data.password}
-          onChangeText={(value) =>
-            setData((prevState) => ({ ...prevState, password: value }))
-          }
         />
         <Text
           style={style.input__button}
@@ -111,12 +74,11 @@ export const RegistrationScreen = () => {
           {showPassword ? "Скрыть" : "Показать"}
         </Text>
       </View>
-
       {!hasFocus && (
         <View style={style.wrapperButtonAndLink}>
-          <ButtonSubmit text={"Зарегистрироваться"} onClick={handleSubmit} />
+          <ButtonSubmit text={"Войти"} />
 
-          <Text style={style.form__link}>Уже есть аккаунт? Войти</Text>
+          <Text style={style.form__link}>Нет аккаунта? Зарегистрироваться</Text>
         </View>
       )}
     </View>
@@ -134,7 +96,7 @@ const style = StyleSheet.create({
 
     backgroundColor: "#fff",
 
-    paddingTop: 92,
+    paddingTop: 32,
     paddingLeft: 16,
     paddingRight: 16,
   },
@@ -182,6 +144,7 @@ const style = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     textAlign: "center",
+
     color: "#1B4371",
 
     marginTop: 16,

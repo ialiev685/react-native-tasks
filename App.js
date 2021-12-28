@@ -7,16 +7,18 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Dimensions,
 } from "react-native";
 
 //шрифты
-
 import { useFonts } from "expo-font";
-//form
+//форма регистрации
 import { RegistrationScreen } from "./Screens/RegistrationScreen";
+//форма логирования
+import { LoginScreen } from "./Screens/LoginScreen";
 
 export default function App() {
-  const [hasFocus, setHasFocus] = useState(false);
+  // const [hasFocus, setHasFocus] = useState(false);
 
   const [loaded] = useFonts({
     "Roboto-Regular": require("./fonts/Roboto/Roboto-Regular.ttf"),
@@ -37,7 +39,8 @@ export default function App() {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : ""}
           >
-            <RegistrationScreen onFocus={hasFocus} />
+            <RegistrationScreen />
+            {/* <LoginScreen /> */}
           </KeyboardAvoidingView>
         </ImageBackground>
       </View>
@@ -47,6 +50,9 @@ export default function App() {
 
 const style = StyleSheet.create({
   image: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+
     flex: 1,
     justifyContent: "flex-end",
 
