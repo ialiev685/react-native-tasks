@@ -1,4 +1,11 @@
-import { View, StyleSheet, Text, TextInput, Keyboard } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  Keyboard,
+  Dimensions,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 //кнопка
 import { ButtonSubmit } from "../../components/ButtonSubmit";
@@ -13,18 +20,34 @@ const initData = {
   password: "",
 };
 
+const initDeminsion = {
+  width: Dimensions.get("window").width - 16 * 2,
+  paddingBottom: Dimensions.get("window").height > 560 ? 111 : 10,
+};
+
 export const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [changeBorder, setChangeBorder] = useState(initFocus);
   const [hasFocus, setHasFocus] = useState(false);
   const [data, setData] = useState(initData);
 
+  const [dimensions, setDimensions] = useState(initDeminsion);
+
   useEffect(() => {
+    const onChangeDeminsion = () => {
+      const width = Dimensions.get("window").width - 16 * 2;
+      const height = Dimensions.get("window").height;
+      const paddingBottom = height > 560 ? 111 : 10;
+      setDimensions((prevState) => ({ ...prevState, width, paddingBottom }));
+    };
+
+    Dimensions.addEventListener("change", onChangeDeminsion);
     Keyboard.addListener("keyboardDidHide", handleHideKeyboard);
     Keyboard.addListener("keyboardDidShow", handleShowKeyboard);
     return () => {
       Keyboard.removeAllListeners("keyboardDidHide", handleHideKeyboard);
       Keyboard.removeAllListeners("keyboardDidShow", handleShowKeyboard);
+      Dimensions.removeEventListener("change", onChangeDeminsion);
     };
   }, []);
 
@@ -46,59 +69,64 @@ export const LoginScreen = () => {
   };
 
   return (
-    <View
-      style={{
-        ...style.form,
-        paddingBottom: hasFocus ? 32 : 111,
-      }}
-    >
-      <Text style={style.form__title}>Войти</Text>
-
-      <TextInput
-        style={{
-          ...style.form__input,
-          borderColor: changeBorder.email,
-        }}
-        autoComplete="off"
-        onFocus={() => hanlerFocus({ email: "#FF6C00" })}
-        onBlur={() => hanlerFocus({ email: "#E8E8E8" })}
-        placeholder="Адрес электронной почты"
-        onChangeText={(value) =>
-          setData((prevState) => ({ ...prevState, email: value }))
-        }
-      />
-
+    <View style={style.form}>
       <View
         style={{
-          ...style.form__input,
-          borderColor: changeBorder.password,
-          marginBottom: hasFocus ? 0 : 43,
+          ...style.container,
+          width: dimensions.width,
+          paddingBottom: hasFocus ? 32 : dimensions.paddingBottom,
         }}
       >
+        <Text style={style.form__title}>Войти</Text>
+
         <TextInput
+          style={{
+            ...style.form__input,
+            borderColor: changeBorder.email,
+          }}
           autoComplete="off"
-          placeholder="Пароль"
-          secureTextEntry={!showPassword}
-          onFocus={() => hanlerFocus({ password: "#FF6C00" })}
-          onBlur={() => hanlerFocus({ password: "#E8E8E8" })}
+          onFocus={() => hanlerFocus({ email: "#FF6C00" })}
+          onBlur={() => hanlerFocus({ email: "#E8E8E8" })}
+          placeholder="Адрес электронной почты"
           onChangeText={(value) =>
-            setData((prevState) => ({ ...prevState, password: value }))
+            setData((prevState) => ({ ...prevState, email: value }))
           }
         />
-        <Text
-          style={style.input__button}
-          onPress={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? "Скрыть" : "Показать"}
-        </Text>
-      </View>
-      {!hasFocus && (
-        <View style={style.wrapperButtonAndLink}>
-          <ButtonSubmit text={"Войти"} onClick={handleSubmit} />
 
-          <Text style={style.form__link}>Нет аккаунта? Зарегистрироваться</Text>
+        <View
+          style={{
+            ...style.form__input,
+            borderColor: changeBorder.password,
+            marginBottom: hasFocus ? 0 : 43,
+          }}
+        >
+          <TextInput
+            autoComplete="off"
+            placeholder="Пароль"
+            secureTextEntry={!showPassword}
+            onFocus={() => hanlerFocus({ password: "#FF6C00" })}
+            onBlur={() => hanlerFocus({ password: "#E8E8E8" })}
+            onChangeText={(value) =>
+              setData((prevState) => ({ ...prevState, password: value }))
+            }
+          />
+          <Text
+            style={style.input__button}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "Скрыть" : "Показать"}
+          </Text>
         </View>
-      )}
+        {!hasFocus && (
+          <View style={style.wrapperButtonAndLink}>
+            <ButtonSubmit text={"Войти"} onClick={handleSubmit} />
+
+            <Text style={style.form__link}>
+              Нет аккаунта? Зарегистрироваться
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -106,6 +134,7 @@ export const LoginScreen = () => {
 const style = StyleSheet.create({
   form: {
     alignItems: "center",
+    // justifyContent: "center",
 
     minWidth: 320,
 
@@ -113,10 +142,10 @@ const style = StyleSheet.create({
     borderTopRightRadius: 25,
 
     backgroundColor: "#fff",
+  },
 
+  container: {
     paddingTop: 32,
-    paddingLeft: 16,
-    paddingRight: 16,
   },
   form__title: {
     fontFamily: "Roboto-Medium",
@@ -125,6 +154,8 @@ const style = StyleSheet.create({
     lineHeight: 35,
 
     marginBottom: 32,
+
+    textAlign: "center",
   },
   form__input: {
     position: "relative",

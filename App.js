@@ -39,8 +39,8 @@ export default function App() {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : ""}
           >
-            {/* <RegistrationScreen /> */}
-            <LoginScreen />
+            <RegistrationScreen />
+            {/* <LoginScreen /> */}
           </KeyboardAvoidingView>
         </ImageBackground>
       </View>

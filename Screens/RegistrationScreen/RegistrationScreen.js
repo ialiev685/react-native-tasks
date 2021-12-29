@@ -1,4 +1,11 @@
-import { View, StyleSheet, Text, TextInput, Keyboard } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  Keyboard,
+  Dimensions,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 //кнопка
 import { ButtonSubmit } from "../../components/ButtonSubmit";
@@ -15,18 +22,35 @@ const initData = {
   password: "",
 };
 
+const initDeminsion = {
+  width: Dimensions.get("window").width - 16 * 2,
+  paddingBottom: Dimensions.get("window").height > 560 ? 78 : 10,
+};
+
 export const RegistrationScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [changeBorder, setChangeBorder] = useState(initFocus);
   const [hasFocus, setHasFocus] = useState(false);
   const [data, setData] = useState(initData);
 
+  const [dimensions, setDimensions] = useState(initDeminsion);
+
   useEffect(() => {
+    const onChangeDeminsion = () => {
+      const width = Dimensions.get("window").width - 16 * 2;
+      const height = Dimensions.get("window").height;
+      const paddingBottom = height > 560 ? 78 : 10;
+      setDimensions((prevState) => ({ ...prevState, width, paddingBottom }));
+    };
+
+    Dimensions.addEventListener("change", onChangeDeminsion);
+
     Keyboard.addListener("keyboardDidHide", handleHideKeyboard);
     Keyboard.addListener("keyboardDidShow", handleShowKeyboard);
     return () => {
       Keyboard.removeAllListeners("keyboardDidHide", handleHideKeyboard);
       Keyboard.removeAllListeners("keyboardDidShow", handleShowKeyboard);
+      Dimensions.removeEventListener("change", onChangeDeminsion);
     };
   }, []);
 
@@ -48,77 +72,79 @@ export const RegistrationScreen = () => {
   };
 
   return (
-    <View
-      style={{
-        ...style.form,
-        paddingTop: hasFocus ? 92 : 92,
-        paddingBottom: hasFocus ? 32 : 78,
-      }}
-    >
-      <Text style={style.form__title}>Регистрация</Text>
-
-      <TextInput
-        style={{
-          ...style.form__input,
-          borderColor: changeBorder.login,
-        }}
-        autoComplete="off"
-        placeholder="Логин"
-        onFocus={() => hanlerFocus({ login: "#FF6C00" })}
-        onBlur={() => hanlerFocus({ login: "#E8E8E8" })}
-        value={data.login}
-        onChangeText={(value) =>
-          setData((prevState) => ({ ...prevState, login: value }))
-        }
-      />
-      <TextInput
-        style={{
-          ...style.form__input,
-          borderColor: changeBorder.email,
-        }}
-        autoComplete="off"
-        onFocus={() => hanlerFocus({ email: "#FF6C00" })}
-        onBlur={() => hanlerFocus({ email: "#E8E8E8" })}
-        placeholder="Адрес электронной почты"
-        value={data.email}
-        onChangeText={(value) =>
-          setData((prevState) => ({ ...prevState, email: value }))
-        }
-      />
-
+    <View style={style.form}>
       <View
         style={{
-          ...style.form__input,
-          borderColor: changeBorder.password,
-          marginBottom: hasFocus ? 0 : 43,
+          width: dimensions.width,
+          paddingTop: hasFocus ? 32 : 92,
+          paddingBottom: hasFocus ? 32 : dimensions.paddingBottom,
         }}
       >
+        <Text style={style.form__title}>Регистрация</Text>
+
         <TextInput
+          style={{
+            ...style.form__input,
+            borderColor: changeBorder.login,
+          }}
           autoComplete="off"
-          placeholder="Пароль"
-          secureTextEntry={!showPassword}
-          onFocus={() => hanlerFocus({ password: "#FF6C00" })}
-          onBlur={() => hanlerFocus({ password: "#E8E8E8" })}
-          value={data.password}
+          placeholder="Логин"
+          onFocus={() => hanlerFocus({ login: "#FF6C00" })}
+          onBlur={() => hanlerFocus({ login: "#E8E8E8" })}
+          value={data.login}
           onChangeText={(value) =>
-            setData((prevState) => ({ ...prevState, password: value }))
+            setData((prevState) => ({ ...prevState, login: value }))
           }
         />
-        <Text
-          style={style.input__button}
-          onPress={() => setShowPassword(!showPassword)}
+        <TextInput
+          style={{
+            ...style.form__input,
+            borderColor: changeBorder.email,
+          }}
+          autoComplete="off"
+          onFocus={() => hanlerFocus({ email: "#FF6C00" })}
+          onBlur={() => hanlerFocus({ email: "#E8E8E8" })}
+          placeholder="Адрес электронной почты"
+          value={data.email}
+          onChangeText={(value) =>
+            setData((prevState) => ({ ...prevState, email: value }))
+          }
+        />
+
+        <View
+          style={{
+            ...style.form__input,
+            borderColor: changeBorder.password,
+            marginBottom: hasFocus ? 0 : 43,
+          }}
         >
-          {showPassword ? "Скрыть" : "Показать"}
-        </Text>
-      </View>
-
-      {!hasFocus && (
-        <View style={style.wrapperButtonAndLink}>
-          <ButtonSubmit text={"Зарегистрироваться"} onClick={handleSubmit} />
-
-          <Text style={style.form__link}>Уже есть аккаунт? Войти</Text>
+          <TextInput
+            autoComplete="off"
+            placeholder="Пароль"
+            secureTextEntry={!showPassword}
+            onFocus={() => hanlerFocus({ password: "#FF6C00" })}
+            onBlur={() => hanlerFocus({ password: "#E8E8E8" })}
+            value={data.password}
+            onChangeText={(value) =>
+              setData((prevState) => ({ ...prevState, password: value }))
+            }
+          />
+          <Text
+            style={style.input__button}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "Скрыть" : "Показать"}
+          </Text>
         </View>
-      )}
+
+        {!hasFocus && (
+          <View style={style.wrapperButtonAndLink}>
+            <ButtonSubmit text={"Зарегистрироваться"} onClick={handleSubmit} />
+
+            <Text style={style.form__link}>Уже есть аккаунт? Войти</Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -133,11 +159,8 @@ const style = StyleSheet.create({
     borderTopRightRadius: 25,
 
     backgroundColor: "#fff",
-
-    paddingTop: 92,
-    paddingLeft: 16,
-    paddingRight: 16,
   },
+
   form__title: {
     fontFamily: "Roboto-Medium",
 
@@ -145,6 +168,8 @@ const style = StyleSheet.create({
     lineHeight: 35,
 
     marginBottom: 32,
+
+    textAlign: "center",
   },
   form__input: {
     position: "relative",
