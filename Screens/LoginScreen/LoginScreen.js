@@ -8,10 +8,16 @@ const initFocus = {
   password: "#E8E8E8",
 };
 
+const initData = {
+  email: "",
+  password: "",
+};
+
 export const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [changeBorder, setChangeBorder] = useState(initFocus);
   const [hasFocus, setHasFocus] = useState(false);
+  const [data, setData] = useState(initData);
 
   useEffect(() => {
     Keyboard.addListener("keyboardDidHide", handleHideKeyboard);
@@ -33,6 +39,12 @@ export const LoginScreen = () => {
     setChangeBorder((prevState) => ({ ...prevState, ...key }));
   };
 
+  const handleSubmit = () => {
+    Keyboard.dismiss();
+    setHasFocus(false);
+    console.log(data);
+  };
+
   return (
     <View
       style={{
@@ -51,6 +63,9 @@ export const LoginScreen = () => {
         onFocus={() => hanlerFocus({ email: "#FF6C00" })}
         onBlur={() => hanlerFocus({ email: "#E8E8E8" })}
         placeholder="Адрес электронной почты"
+        onChangeText={(value) =>
+          setData((prevState) => ({ ...prevState, email: value }))
+        }
       />
 
       <View
@@ -66,6 +81,9 @@ export const LoginScreen = () => {
           secureTextEntry={!showPassword}
           onFocus={() => hanlerFocus({ password: "#FF6C00" })}
           onBlur={() => hanlerFocus({ password: "#E8E8E8" })}
+          onChangeText={(value) =>
+            setData((prevState) => ({ ...prevState, password: value }))
+          }
         />
         <Text
           style={style.input__button}
@@ -76,7 +94,7 @@ export const LoginScreen = () => {
       </View>
       {!hasFocus && (
         <View style={style.wrapperButtonAndLink}>
-          <ButtonSubmit text={"Войти"} />
+          <ButtonSubmit text={"Войти"} onClick={handleSubmit} />
 
           <Text style={style.form__link}>Нет аккаунта? Зарегистрироваться</Text>
         </View>
