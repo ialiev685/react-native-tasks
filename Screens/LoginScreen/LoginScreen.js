@@ -5,6 +5,9 @@ import {
   TextInput,
   Keyboard,
   Dimensions,
+  TouchableWithoutFeedback,
+  ImageBackground,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 //кнопка
@@ -69,69 +72,92 @@ export const LoginScreen = () => {
   };
 
   return (
-    <View style={style.form}>
-      <View
-        style={{
-          ...style.container,
-          width: dimensions.width,
-          paddingBottom: hasFocus ? 32 : dimensions.paddingBottom,
-        }}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ImageBackground
+        source={require("../../images/rock-bg.png")}
+        style={style.image}
       >
-        <Text style={style.form__title}>Войти</Text>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""}>
+          <View style={style.form}>
+            <View
+              style={{
+                ...style.container,
+                width: dimensions.width,
+                paddingBottom: hasFocus ? 32 : dimensions.paddingBottom,
+              }}
+            >
+              <Text style={style.form__title}>Войти</Text>
 
-        <TextInput
-          style={{
-            ...style.form__input,
-            borderColor: changeBorder.email,
-          }}
-          autoComplete="off"
-          onFocus={() => hanlerFocus({ email: "#FF6C00" })}
-          onBlur={() => hanlerFocus({ email: "#E8E8E8" })}
-          placeholder="Адрес электронной почты"
-          onChangeText={(value) =>
-            setData((prevState) => ({ ...prevState, email: value }))
-          }
-        />
+              <TextInput
+                style={{
+                  ...style.form__input,
+                  borderColor: changeBorder.email,
+                }}
+                autoComplete="off"
+                onFocus={() => hanlerFocus({ email: "#FF6C00" })}
+                onBlur={() => hanlerFocus({ email: "#E8E8E8" })}
+                placeholder="Адрес электронной почты"
+                onChangeText={(value) =>
+                  setData((prevState) => ({ ...prevState, email: value }))
+                }
+              />
 
-        <View
-          style={{
-            ...style.form__input,
-            borderColor: changeBorder.password,
-            marginBottom: hasFocus ? 0 : 43,
-          }}
-        >
-          <TextInput
-            autoComplete="off"
-            placeholder="Пароль"
-            secureTextEntry={!showPassword}
-            onFocus={() => hanlerFocus({ password: "#FF6C00" })}
-            onBlur={() => hanlerFocus({ password: "#E8E8E8" })}
-            onChangeText={(value) =>
-              setData((prevState) => ({ ...prevState, password: value }))
-            }
-          />
-          <Text
-            style={style.input__button}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? "Скрыть" : "Показать"}
-          </Text>
-        </View>
-        {!hasFocus && (
-          <View style={style.wrapperButtonAndLink}>
-            <ButtonSubmit text={"Войти"} onClick={handleSubmit} />
+              <View
+                style={{
+                  ...style.form__input,
+                  borderColor: changeBorder.password,
+                  marginBottom: hasFocus ? 0 : 43,
+                }}
+              >
+                <TextInput
+                  autoComplete="off"
+                  placeholder="Пароль"
+                  secureTextEntry={!showPassword}
+                  onFocus={() => hanlerFocus({ password: "#FF6C00" })}
+                  onBlur={() => hanlerFocus({ password: "#E8E8E8" })}
+                  onChangeText={(value) =>
+                    setData((prevState) => ({
+                      ...prevState,
+                      password: value,
+                    }))
+                  }
+                />
+                <Text
+                  style={style.input__button}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "Скрыть" : "Показать"}
+                </Text>
+              </View>
+              {!hasFocus && (
+                <View style={style.wrapperButtonAndLink}>
+                  <ButtonSubmit text={"Войти"} onClick={handleSubmit} />
 
-            <Text style={style.form__link}>
-              Нет аккаунта? Зарегистрироваться
-            </Text>
+                  <Text style={style.form__link}>
+                    Нет аккаунта? Зарегистрироваться
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
-        )}
-      </View>
-    </View>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 };
 
 const style = StyleSheet.create({
+  image: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+
+    flex: 1,
+    justifyContent: "flex-end",
+
+    resizeMode: "cover",
+    minWidth: 320,
+  },
+
   form: {
     alignItems: "center",
     // justifyContent: "center",
