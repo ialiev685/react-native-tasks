@@ -2,16 +2,15 @@ import React from "react";
 
 //навигация
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 //шрифты
 import { useFonts } from "expo-font";
-//форма регистрации
-import { RegistrationScreen } from "./Screens/RegistrationScreen";
-//форма логирования
-import { LoginScreen } from "./Screens/LoginScreen";
 
-const Stack = createNativeStackNavigator();
+//router
+import { Router } from "./screens/Router";
+
+// const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [loaded] = useFonts({
@@ -20,23 +19,26 @@ export default function App() {
     "Roboto-Bold": require("./fonts/Roboto/Roboto-Bold.ttf"),
   });
 
+  const route = Router(false);
+
   if (!loaded) {
     return null;
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Registration">
+      {route}
+      {/* <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
           name="Registration"
           component={RegistrationScreen}
-          options={{ title: "Registration" }}
+          options={{ title: "Registration", headerShown: false }}
         />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ title: "Login" }}
+          options={{ title: "Login", headerShown: false }}
         />
-      </Stack.Navigator>
+      </Stack.Navigator> */}
     </NavigationContainer>
   );
 }
