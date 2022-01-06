@@ -15,11 +15,18 @@ const Tab = createBottomTabNavigator();
 
 export const Home = () => {
   return (
-    <Tab.Navigator initialRouteName="Posts">
+    <Tab.Navigator
+      initialRouteName="Posts"
+      screenOptions={{ tabBarStyle: { height: 71 } }}
+    >
       <Tab.Screen
         name="Posts"
         component={PostsScreen}
         options={{
+          tabBarItemStyle: {
+            // width: 40,
+            // height: 40,
+          },
           headerTitle: "Публикации",
           headerTitleStyle: {
             fontFamily: "Roboto-Medium",
@@ -27,10 +34,11 @@ export const Home = () => {
 
             color: "#212121",
           },
-          title: "",
+          tabBarShowLabel: false,
+
           headerTitleAlign: "center",
           tabBarIcon: ({ focused, color, size }) => {
-            return <AntDesign name="appstore-o" size={18} color="#4d4d4d" />;
+            return <AntDesign name="appstore-o" size={24} color="#4d4d4d" />;
           },
         }}
       />
@@ -38,18 +46,22 @@ export const Home = () => {
         name="CreatePosts"
         component={CreatePostsScreen}
         options={{
+          tabBarItemStyle: {
+            // width: 70,
+            // height: 40,
+          },
           headerTitle: "Создать публикацию",
           headerTitleStyle: {
             fontFamily: "Roboto-Medium",
             fontSize: 17,
             color: "#212121",
           },
-          title: "",
+          tabBarShowLabel: false,
           headerTitleAlign: "center",
           tabBarIcon: ({ focused, color, size }) => {
             return (
               <View style={style.addButton}>
-                <Ionicons name="add" size={20} color="#FFFFFF" />
+                <Ionicons name="add" size={size} color="#FFFFFF" />
               </View>
             );
           },
@@ -65,10 +77,10 @@ export const Home = () => {
             fontSize: 17,
             color: "#212121",
           },
-          title: "",
+          tabBarShowLabel: false,
           headerTitleAlign: "center",
           tabBarIcon: ({ focused, color, size }) => {
-            return <Feather name="user" size={18} color="#4d4d4d" />;
+            return <Feather name="user" size={24} color="#4d4d4d" />;
           },
         }}
       />
