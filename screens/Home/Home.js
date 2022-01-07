@@ -9,6 +9,7 @@ import { ProfileScreen } from "./ProfileScreen";
 //иконки
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import { Feather as LogOut } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -17,7 +18,7 @@ export const Home = () => {
   return (
     <Tab.Navigator
       initialRouteName="Posts"
-      screenOptions={{ tabBarStyle: { height: 71 } }}
+      screenOptions={{ tabBarStyle: { height: 71 }}}
     >
       <Tab.Screen
         name="Posts"
@@ -34,6 +35,7 @@ export const Home = () => {
 
             color: "#212121",
           },
+          headerRight: () => <LogOut style={{marginRight:16}} name="log-out" size={24} color="#BDBDBD" onPress={()=>console.log('to Exit')}/>,
           tabBarShowLabel: false,
 
           headerTitleAlign: "center",
