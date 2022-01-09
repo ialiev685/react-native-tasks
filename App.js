@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 //навигация
 import { NavigationContainer } from "@react-navigation/native";
@@ -13,32 +13,18 @@ import { Router } from "./screens/Router";
 // const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isAuth, setIsAuth] = useState(true);
+
   const [loaded] = useFonts({
     "Roboto-Regular": require("./fonts/Roboto/Roboto-Regular.ttf"),
     "Roboto-Medium": require("./fonts/Roboto/Roboto-Medium.ttf"),
     "Roboto-Bold": require("./fonts/Roboto/Roboto-Bold.ttf"),
   });
 
-  const route = Router(false);
+  const route = Router(isAuth);
 
   if (!loaded) {
     return null;
   }
-  return (
-    <NavigationContainer>
-      {route}
-      {/* <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen
-          name="Registration"
-          component={RegistrationScreen}
-          options={{ title: "Registration", headerShown: false }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ title: "Login", headerShown: false }}
-        />
-      </Stack.Navigator> */}
-    </NavigationContainer>
-  );
+  return <NavigationContainer>{route}</NavigationContainer>;
 }

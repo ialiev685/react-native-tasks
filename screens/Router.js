@@ -1,4 +1,5 @@
 import React from "react";
+// import { View } from "react-native";
 
 //навигация
 
@@ -8,6 +9,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RegistrationScreen } from "./Auth/RegistrationScreen";
 //форма логирования
 import { LoginScreen } from "./Auth/LoginScreen";
+//home
+import { Home } from "./Home";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,5 +30,5 @@ export const Router = (isAuth) => {
         />
       </Stack.Navigator>
     );
-  return <div></div>;
+  return <Home />;
 };
