@@ -18,7 +18,7 @@ export const Home = () => {
   return (
     <Tab.Navigator
       initialRouteName="Posts"
-      screenOptions={{ tabBarStyle: { height: 71 }}}
+      screenOptions={{ tabBarStyle: { height: 71 } }}
     >
       <Tab.Screen
         name="Posts"
@@ -28,6 +28,7 @@ export const Home = () => {
             // width: 40,
             // height: 40,
           },
+          headerTitleAlign: "center",
           headerTitle: "Публикации",
           headerTitleStyle: {
             fontFamily: "Roboto-Medium",
@@ -35,10 +36,17 @@ export const Home = () => {
 
             color: "#212121",
           },
-          headerRight: () => <LogOut style={{marginRight:16}} name="log-out" size={24} color="#BDBDBD" onPress={()=>console.log('to Exit')}/>,
+          headerRight: () => (
+            <LogOut
+              style={{ marginRight: 16 }}
+              name="log-out"
+              size={24}
+              color="#BDBDBD"
+              onPress={() => console.log("to Exit")}
+            />
+          ),
           tabBarShowLabel: false,
 
-          headerTitleAlign: "center",
           tabBarIcon: ({ focused, color, size }) => {
             return <AntDesign name="appstore-o" size={24} color="#4d4d4d" />;
           },
@@ -52,14 +60,16 @@ export const Home = () => {
             // width: 70,
             // height: 40,
           },
-          headerTitle: "Создать публикацию",
-          headerTitleStyle: {
-            fontFamily: "Roboto-Medium",
-            fontSize: 17,
-            color: "#212121",
-          },
-          tabBarShowLabel: false,
           headerTitleAlign: "center",
+          headerShown: false,
+          // headerTitle: "Создать публикацию",
+          // headerTitleStyle: {
+          //   fontFamily: "Roboto-Medium",
+          //   fontSize: 17,
+          //   color: "#212121",
+          // },
+          tabBarShowLabel: false,
+
           tabBarIcon: ({ focused, color, size }) => {
             return (
               <View style={style.addButton}>
@@ -74,13 +84,14 @@ export const Home = () => {
         component={ProfileScreen}
         options={{
           headerTitle: "Профиль",
+          headerTitleAlign: "center",
           headerTitleStyle: {
             fontFamily: "Roboto-Medium",
             fontSize: 17,
             color: "#212121",
           },
           tabBarShowLabel: false,
-          headerTitleAlign: "center",
+
           tabBarIcon: ({ focused, color, size }) => {
             return <Feather name="user" size={24} color="#4d4d4d" />;
           },
