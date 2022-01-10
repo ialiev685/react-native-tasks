@@ -62,8 +62,7 @@ export const AfterTakePicture = ({ navigation }) => {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
+
     marginHorizontal: 16,
   },
   camera: {
@@ -74,7 +73,6 @@ const style = StyleSheet.create({
     marginTop: 32,
 
     height: "80%",
-    // height: 240,
 
     borderRadius: 8,
     marginBottom: 8,

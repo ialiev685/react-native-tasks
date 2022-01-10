@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 
 export const CreatePostsScreen = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName={"AfterPicture"}>
       <Stack.Screen
         name="AfterPicture"
         component={AfterTakePicture}

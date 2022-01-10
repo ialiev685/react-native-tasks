@@ -9,66 +9,62 @@ import {
   KeyboardAvoidingView,
   Image,
 } from "react-native";
+import * as Location from "expo-location";
 
-//камера
-import { Camera } from "expo-camera";
 //иконка
-import { FontAwesome } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
+//кнопка
+import { ButtonSubmit } from "../../../../components/ButtonSubmit";
 
-export const BeforeTakePicture = ({ route }) => {
-  // const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
-  // const [camera, setCamera] = useState(null);
-  // console.log(route.params);
-  const [picture, setPicture] = useState(null);
+const initDataPicture = {
+  name: "картинка",
+  place: "страна, город",
+  uri: null,
+};
+
+export const BeforeTakePicture = ({ route, navigation }) => {
+  const [data, setData] = useState(initDataPicture);
+  const [hasPermissionLocation, setHasPermissionLocation] = useState(false);
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     if (route.params) {
-      setPicture(route.params.uri);
-      console.log("route", route.params.uri);
+      setData((prevState) => ({ ...prevState, uri: route.params.uri }));
     }
-
-    // (async () => {
-    //   const { status } = await Camera.requestCameraPermissionsAsync();
-    //   setHasPermissionCamera(status === "granted");
-    //   console.log(status);
-    // })();
   }, [route.params]);
 
-  // const takePhoto = async () => {
-  //   const { uri } = await camera.takePictureAsync();
-  //   console.log(uri);
-  //   setPhoto(uri);
-  // };
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") return;
+      setHasPermissionLocation(true);
+      const location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
 
-  // if (!hasPermissionCamera) {
-  //   return (
-  //     <View style={style.container}>
-  //       <Text>No access to camera</Text>
-  //     </View>
-  //   );
-  // }
+  const handleSend = () => {
+    navigation.goBack();
+    navigation.navigate("Posts", { ...data, location });
+  };
 
   return (
     <ScrollView style={style.container}>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""}>
-        {/* <Camera
-          style={style.camera}
-          type={Camera.Constants.Type.back}
-          ref={(ref) => setCamera(ref)}
-          ratio={"1:1"}
-        >
-          <View style={style.battonContainer}>
-            <TouchableOpacity onPress={takePhoto}>
-              <FontAwesome name="camera" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-        </Camera> */}
         <View style={style.containerPicture}>
-          {picture && <Image style={style.picture} source={{ uri: picture }} />}
+          {data.uri && (
+            <Image style={style.picture} source={{ uri: data.uri }} />
+          )}
         </View>
-        <Text style={{ marginBottom: 48 }}>Редактировать фото</Text>
-        <TextInput placeholder="Название..." style={style.input} />
+        <Text style={style.textUpload}>Редактировать фото</Text>
+        <TextInput
+          placeholder="Название..."
+          style={style.input}
+          value={data.name}
+          onChangeText={(value) =>
+            setData((prevState) => ({ ...prevState, name: value }))
+          }
+        />
         <View style={[style.input, style.inputLocation]}>
           <EvilIcons
             name="location"
@@ -76,8 +72,15 @@ export const BeforeTakePicture = ({ route }) => {
             color="#BDBDBD"
             style={style.iconLocation}
           />
-          <TextInput placeholder="Местность..." />
+          <TextInput
+            placeholder="Местность..."
+            value={data.place}
+            onChangeText={(value) =>
+              setData((prevState) => ({ ...prevState, place: value }))
+            }
+          />
         </View>
+        <ButtonSubmit text={"Опубликовать"} onClick={handleSend} />
       </KeyboardAvoidingView>
     </ScrollView>
   );
@@ -86,38 +89,32 @@ export const BeforeTakePicture = ({ route }) => {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
+
     marginHorizontal: 16,
   },
   containerPicture: {
-    // flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
-
     marginTop: 32,
 
-    // height: "45%",
     height: 240,
 
     borderRadius: 8,
-    // overflow: "hidden",
+
+    marginBottom: 8,
   },
   picture: {
     width: "100%",
     height: "100%",
     borderRadius: 8,
+    resizeMode: "cover",
   },
 
-  battonContainer: {
-    alignItems: "center",
-    justifyContent: "center",
+  textUpload: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#BDBDBD",
 
-    width: 60,
-    height: 60,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
-
-    borderRadius: 50,
+    marginBottom: 32,
   },
 
   input: {

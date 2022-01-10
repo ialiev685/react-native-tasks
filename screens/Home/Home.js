@@ -24,10 +24,6 @@ export const Home = () => {
         name="Posts"
         component={PostsScreen}
         options={{
-          tabBarItemStyle: {
-            // width: 40,
-            // height: 40,
-          },
           headerTitleAlign: "center",
           headerTitle: "Публикации",
           headerTitleStyle: {
@@ -56,10 +52,6 @@ export const Home = () => {
         name="CreatePosts"
         component={CreatePostsScreen}
         options={{
-          tabBarItemStyle: {
-            // width: 70,
-            // height: 40,
-          },
           headerTitleAlign: "center",
           headerShown: false,
           // headerTitle: "Создать публикацию",
