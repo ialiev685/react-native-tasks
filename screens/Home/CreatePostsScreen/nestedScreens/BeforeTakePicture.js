@@ -15,39 +15,44 @@ import { Camera } from "expo-camera";
 //иконка
 import { FontAwesome } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
-//кнопка
 
-export const BeforeTakePicture = () => {
-  const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
-  const [camera, setCamera] = useState(null);
-  const [photo, setPhoto] = useState(null);
+export const BeforeTakePicture = ({ route }) => {
+  // const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
+  // const [camera, setCamera] = useState(null);
+  // console.log(route.params);
+  const [picture, setPicture] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermissionCamera(status === "granted");
-      console.log(status);
-    })();
-  }, []);
+    if (route.params) {
+      setPicture(route.params.uri);
+      console.log("route", route.params.uri);
+    }
 
-  const takePhoto = async () => {
-    const { uri } = await camera.takePictureAsync();
-    console.log(uri);
-    setPhoto(uri);
-  };
+    // (async () => {
+    //   const { status } = await Camera.requestCameraPermissionsAsync();
+    //   setHasPermissionCamera(status === "granted");
+    //   console.log(status);
+    // })();
+  }, [route.params]);
 
-  if (!hasPermissionCamera) {
-    return (
-      <View style={style.container}>
-        <Text>No access to camera</Text>
-      </View>
-    );
-  }
+  // const takePhoto = async () => {
+  //   const { uri } = await camera.takePictureAsync();
+  //   console.log(uri);
+  //   setPhoto(uri);
+  // };
+
+  // if (!hasPermissionCamera) {
+  //   return (
+  //     <View style={style.container}>
+  //       <Text>No access to camera</Text>
+  //     </View>
+  //   );
+  // }
 
   return (
     <ScrollView style={style.container}>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""}>
-        <Camera
+        {/* <Camera
           style={style.camera}
           type={Camera.Constants.Type.back}
           ref={(ref) => setCamera(ref)}
@@ -58,8 +63,11 @@ export const BeforeTakePicture = () => {
               <FontAwesome name="camera" size={20} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
-        </Camera>
-        <Text style={{ marginBottom: 48 }}>Загрузить фото</Text>
+        </Camera> */}
+        <View style={style.containerPicture}>
+          {picture && <Image style={style.picture} source={{ uri: picture }} />}
+        </View>
+        <Text style={{ marginBottom: 48 }}>Редактировать фото</Text>
         <TextInput placeholder="Название..." style={style.input} />
         <View style={[style.input, style.inputLocation]}>
           <EvilIcons
@@ -82,16 +90,22 @@ const style = StyleSheet.create({
     // alignItems: "center",
     marginHorizontal: 16,
   },
-  camera: {
+  containerPicture: {
     // flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
 
     marginTop: 32,
 
     // height: "45%",
     height: 240,
 
+    borderRadius: 8,
+    // overflow: "hidden",
+  },
+  picture: {
+    width: "100%",
+    height: "100%",
     borderRadius: 8,
   },
 
