@@ -24,14 +24,15 @@ export const Home = () => {
         name="Posts"
         component={PostsScreen}
         options={{
-          headerTitleAlign: "center",
-          headerTitle: "Публикации",
-          headerTitleStyle: {
-            fontFamily: "Roboto-Medium",
-            fontSize: 17,
+          headerShown: false,
+          // headerTitleAlign: "center",
+          // headerTitle: "Публикации",
+          // headerTitleStyle: {
+          //   fontFamily: "Roboto-Medium",
+          //   fontSize: 17,
 
-            color: "#212121",
-          },
+          //   color: "#212121",
+          // },
           headerRight: () => (
             <LogOut
               style={{ marginRight: 16 }}
@@ -52,8 +53,8 @@ export const Home = () => {
         name="CreatePosts"
         component={CreatePostsScreen}
         options={{
-          headerTitleAlign: "center",
           headerShown: false,
+          // headerTitleAlign: "center",
           // headerTitle: "Создать публикацию",
           // headerTitleStyle: {
           //   fontFamily: "Roboto-Medium",

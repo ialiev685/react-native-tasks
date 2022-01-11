@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   TextInput,
   ScrollView,
   KeyboardAvoidingView,
@@ -12,7 +11,8 @@ import {
 import * as Location from "expo-location";
 
 //иконка
-import { EvilIcons } from "@expo/vector-icons";
+
+import MapIcon from "../../../components/MapIcon";
 //кнопка
 import { ButtonSubmit } from "../../../components/ButtonSubmit";
 
@@ -22,10 +22,9 @@ const initDataPicture = {
   uri: null,
 };
 
-export const BeforeTakePicture = ({ route, navigation }) => {
+export const BeforeTakePictureScreen = ({ route, navigation }) => {
   const [data, setData] = useState(initDataPicture);
   const [hasPermissionLocation, setHasPermissionLocation] = useState(false);
-  // const [location, setLocation] = useState(null);
 
   useEffect(() => {
     if (route.params) {
@@ -38,8 +37,6 @@ export const BeforeTakePicture = ({ route, navigation }) => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") return;
       setHasPermissionLocation(true);
-      // const location = await Location.getCurrentPositionAsync({});
-      // setLocation(location);
     })();
   }, []);
 
@@ -47,11 +44,11 @@ export const BeforeTakePicture = ({ route, navigation }) => {
     if (hasPermissionLocation) {
       const location = await Location.getCurrentPositionAsync({});
       navigation.goBack();
-      navigation.navigate("Posts", { ...data, location });
+      navigation.navigate("DefaultPosts", { ...data, location });
       return;
     }
     navigation.goBack();
-    navigation.navigate("Posts", { ...data });
+    navigation.navigate("DefaultPosts", { ...data });
   };
 
   return (
@@ -72,12 +69,8 @@ export const BeforeTakePicture = ({ route, navigation }) => {
           }
         />
         <View style={[style.input, style.inputLocation]}>
-          <EvilIcons
-            name="location"
-            size={24}
-            color="#BDBDBD"
-            style={style.iconLocation}
-          />
+          <MapIcon style={style.iconLocation} />
+
           <TextInput
             placeholder="Местность..."
             value={data.place}

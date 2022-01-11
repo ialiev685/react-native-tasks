@@ -9,11 +9,10 @@ import * as MediaLibrary from "expo-media-library";
 //иконка
 import { FontAwesome } from "@expo/vector-icons";
 
-export const AfterTakePicture = ({ navigation }) => {
+export const AfterTakePictureScreen = ({ navigation }) => {
   const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
   const [hasPermissionLibrary, setHasPermissionLibrary] = useState(false);
   const [camera, setCamera] = useState(null);
-  const [photo, setPhoto] = useState(null);
 
   const isFocused = useIsFocused();
 
@@ -31,9 +30,9 @@ export const AfterTakePicture = ({ navigation }) => {
   const takePhoto = async () => {
     try {
       const { uri } = await camera.takePictureAsync();
-      await MediaLibrary.createAssetAsync(uri);
-
-      setPhoto(uri);
+      if (hasPermissionLibrary) {
+        await MediaLibrary.createAssetAsync(uri);
+      }
 
       navigation.navigate("BeforePicture", { uri });
     } catch (error) {
@@ -43,7 +42,13 @@ export const AfterTakePicture = ({ navigation }) => {
 
   if (!hasPermissionCamera) {
     return (
-      <View style={style.container}>
+      <View
+        style={{
+          ...style.container,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Text>No access to camera</Text>
       </View>
     );
@@ -79,7 +84,7 @@ const style = StyleSheet.create({
   camera: {
     // flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
 
     marginTop: 32,
 
@@ -98,6 +103,7 @@ const style = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.3)",
 
     borderRadius: 50,
+    marginBottom: 20,
   },
 
   textUpload: {

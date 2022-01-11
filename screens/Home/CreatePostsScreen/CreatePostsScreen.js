@@ -1,8 +1,8 @@
 import React from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AfterTakePicture } from "../nestedScreens";
-import { BeforeTakePicture } from "../nestedScreens";
+import { AfterTakePictureScreen } from "../nestedScreens";
+import { BeforeTakePictureScreen } from "../nestedScreens";
 
 const NestedStack = createNativeStackNavigator();
 
@@ -11,7 +11,7 @@ export const CreatePostsScreen = () => {
     <NestedStack.Navigator initialRouteName={"AfterPicture"}>
       <NestedStack.Screen
         name="AfterPicture"
-        component={AfterTakePicture}
+        component={AfterTakePictureScreen}
         options={{
           title: "Создать публикацию",
           // headerTitle: "Создать публикацию",
@@ -25,7 +25,7 @@ export const CreatePostsScreen = () => {
       />
       <NestedStack.Screen
         name="BeforePicture"
-        component={BeforeTakePicture}
+        component={BeforeTakePictureScreen}
         options={{
           title: "Редактор публикации",
           // headerTitle: "Редактор публикации",

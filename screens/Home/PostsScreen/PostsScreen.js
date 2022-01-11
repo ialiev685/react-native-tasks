@@ -1,121 +1,46 @@
-import React, { useState, useEffect } from "react";
-import CommentIcon from "../../../components/CommentIcon/CommentIcon";
+import React from "react";
 
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Image,
-  ScrollView,
-} from "react-native";
+// import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-//иконка
-import { EvilIcons } from "@expo/vector-icons";
-import { textDecorationColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
+//компоненты
+import { DefaultPostsScreen } from "../nestedScreens";
+import { CommentsScreen } from "../nestedScreens";
+import { MapScreen } from "../nestedScreens";
 
-export const PostsScreen = ({ route }) => {
-  const [posts, setPosts] = useState([]);
+const NestedStack = createNativeStackNavigator();
 
-  useEffect(() => {
-    console.log("post", route.params);
-    if (route.params) {
-      // const { location, name, place, uri } = route.params;
-      setPosts((prevState) => [...prevState, { ...route.params }]);
-    }
-  }, [route.params]);
-
+export const PostsScreen = () => {
   return (
-    <View style={style.container}>
-      <FlatList
-        data={posts}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={style.picture}>
-            <View style={style.containerImage}>
-              <Image style={style.image} source={{ uri: item.uri }} />
-            </View>
-            <Text style={style.name}>{item.name}</Text>
-            <View style={style.wrapper}>
-              <View style={style.comments}>
-                <CommentIcon />
-                <Text style={style.countComments}>0</Text>
-              </View>
-              <View style={style.location}>
-                <EvilIcons
-                  name="location"
-                  size={24}
-                  color="#BDBDBD"
-                  style={style.iconLocation}
-                />
-                <Text style={style.place}>{item.place}</Text>
-              </View>
-            </View>
-          </View>
-        )}
+    <NestedStack.Navigator
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerTitleAlign: "center",
+
+        headerTitleStyle: {
+          fontFamily: "Roboto-Medium",
+          fontSize: 17,
+
+          color: "#212121",
+        },
+      }}
+      initialRouteName={"DefaultPosts"}
+    >
+      <NestedStack.Screen
+        name="DefaultPosts"
+        component={DefaultPostsScreen}
+        options={{ title: "Публикации" }}
       />
-    </View>
+      <NestedStack.Screen
+        name="Comment"
+        component={CommentsScreen}
+        options={{ title: "Комментарии" }}
+      />
+      <NestedStack.Screen
+        name="Map"
+        component={MapScreen}
+        options={{ title: "Карта" }}
+      />
+    </NestedStack.Navigator>
   );
 };
-
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-
-    // marginHorizontal: 16,
-    marginTop: 32,
-    color: "#BDBDBD",
-  },
-
-  picture: {
-    marginBottom: 32,
-    marginHorizontal: 16,
-  },
-  containerImage: {
-    height: 240,
-    marginBottom: 8,
-    overflow: "hidden",
-  },
-  image: {
-    borderRadius: 8,
-    width: "100%",
-    height: "100%",
-  },
-
-  name: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-
-    marginBottom: 8,
-  },
-
-  wrapper: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-
-  comments: {
-    justifyContent: "flex-start",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  countComments: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#BDBDBD",
-    marginLeft: 6,
-  },
-  location: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  place: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    lineHeight: 19,
-    textDecorationLine: "underline",
-  },
-});
