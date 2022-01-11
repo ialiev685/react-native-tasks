@@ -1,15 +1,15 @@
 import React from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AfterTakePicture } from "./nestedScreens";
-import { BeforeTakePicture } from "./nestedScreens";
+import { AfterTakePicture } from "../nestedScreens";
+import { BeforeTakePicture } from "../nestedScreens";
 
-const Stack = createNativeStackNavigator();
+const NestedStack = createNativeStackNavigator();
 
 export const CreatePostsScreen = () => {
   return (
-    <Stack.Navigator initialRouteName={"AfterPicture"}>
-      <Stack.Screen
+    <NestedStack.Navigator initialRouteName={"AfterPicture"}>
+      <NestedStack.Screen
         name="AfterPicture"
         component={AfterTakePicture}
         options={{
@@ -23,7 +23,7 @@ export const CreatePostsScreen = () => {
           },
         }}
       />
-      <Stack.Screen
+      <NestedStack.Screen
         name="BeforePicture"
         component={BeforeTakePicture}
         options={{
@@ -37,6 +37,6 @@ export const CreatePostsScreen = () => {
           },
         }}
       />
-    </Stack.Navigator>
+    </NestedStack.Navigator>
   );
 };

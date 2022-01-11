@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import CommentIcon from "../../../components/CommentIcon/CommentIcon";
+
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  ScrollView,
+} from "react-native";
+
+//иконка
+import { EvilIcons } from "@expo/vector-icons";
+import { textDecorationColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 
 export const PostsScreen = ({ route }) => {
   const [posts, setPosts] = useState([]);
@@ -22,8 +35,22 @@ export const PostsScreen = ({ route }) => {
             <View style={style.containerImage}>
               <Image style={style.image} source={{ uri: item.uri }} />
             </View>
-            <Text>{item.name}</Text>
-            <Text>{item.place}</Text>
+            <Text style={style.name}>{item.name}</Text>
+            <View style={style.wrapper}>
+              <View style={style.comments}>
+                <CommentIcon />
+                <Text style={style.countComments}>0</Text>
+              </View>
+              <View style={style.location}>
+                <EvilIcons
+                  name="location"
+                  size={24}
+                  color="#BDBDBD"
+                  style={style.iconLocation}
+                />
+                <Text style={style.place}>{item.place}</Text>
+              </View>
+            </View>
           </View>
         )}
       />
@@ -36,19 +63,59 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
 
-    marginHorizontal: 16,
+    // marginHorizontal: 16,
     marginTop: 32,
+    color: "#BDBDBD",
   },
 
   picture: {
     marginBottom: 32,
+    marginHorizontal: 16,
   },
   containerImage: {
-    // width: "100%",
     height: 240,
+    marginBottom: 8,
+    overflow: "hidden",
   },
   image: {
+    borderRadius: 8,
     width: "100%",
     height: "100%",
+  },
+
+  name: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+
+    marginBottom: 8,
+  },
+
+  wrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  comments: {
+    justifyContent: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  countComments: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#BDBDBD",
+    marginLeft: 6,
+  },
+  location: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  place: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    textDecorationLine: "underline",
   },
 });

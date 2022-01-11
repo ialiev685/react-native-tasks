@@ -14,7 +14,7 @@ import * as Location from "expo-location";
 //иконка
 import { EvilIcons } from "@expo/vector-icons";
 //кнопка
-import { ButtonSubmit } from "../../../../components/ButtonSubmit";
+import { ButtonSubmit } from "../../../components/ButtonSubmit";
 
 const initDataPicture = {
   name: "картинка",
@@ -25,7 +25,7 @@ const initDataPicture = {
 export const BeforeTakePicture = ({ route, navigation }) => {
   const [data, setData] = useState(initDataPicture);
   const [hasPermissionLocation, setHasPermissionLocation] = useState(false);
-  const [location, setLocation] = useState(null);
+  // const [location, setLocation] = useState(null);
 
   useEffect(() => {
     if (route.params) {
@@ -38,14 +38,20 @@ export const BeforeTakePicture = ({ route, navigation }) => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") return;
       setHasPermissionLocation(true);
-      const location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      // const location = await Location.getCurrentPositionAsync({});
+      // setLocation(location);
     })();
   }, []);
 
-  const handleSend = () => {
+  const handleSend = async () => {
+    if (hasPermissionLocation) {
+      const location = await Location.getCurrentPositionAsync({});
+      navigation.goBack();
+      navigation.navigate("Posts", { ...data, location });
+      return;
+    }
     navigation.goBack();
-    navigation.navigate("Posts", { ...data, location });
+    navigation.navigate("Posts", { ...data });
   };
 
   return (
@@ -118,8 +124,6 @@ const style = StyleSheet.create({
   },
 
   input: {
-    position: "relative",
-
     paddingBottom: 15,
     marginBottom: 32,
 
@@ -129,12 +133,11 @@ const style = StyleSheet.create({
   },
 
   iconLocation: {
-    position: "absolute",
-    top: 5,
-    left: 0,
+    marginRight: 4,
   },
 
   inputLocation: {
-    paddingLeft: 24,
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
