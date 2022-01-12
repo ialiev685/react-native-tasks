@@ -51,8 +51,8 @@ export const DefaultPostsScreen = ({ route, navigation }) => {
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => {
-                    const { location } = item;
-                    navigation.navigate("Map", { location });
+                    const { coords } = item.location;
+                    navigation.navigate("Map", { coords });
                   }}
                 >
                   <View style={style.location}>
