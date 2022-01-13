@@ -41,7 +41,10 @@ export const DefaultPostsScreen = ({ route, navigation }) => {
               <View style={style.wrapper}>
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  onPress={() => navigation.navigate("Comment")}
+                  onPress={() => {
+                    const { uri } = item;
+                    navigation.navigate("Comment", { uri });
+                  }}
                 >
                   <View style={style.comments}>
                     <CommentIcon />

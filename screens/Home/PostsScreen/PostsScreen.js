@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 //компоненты
 import { DefaultPostsScreen } from "../nestedScreens";
@@ -10,11 +11,19 @@ import { MapScreen } from "../nestedScreens";
 
 const NestedStack = createNativeStackNavigator();
 
-export const PostsScreen = () => {
+export const PostsScreen = ({ route, navigation }) => {
+  useEffect(() => {
+    const currentRoute = getFocusedRouteNameFromRoute(route);
+    if (currentRoute === "Comment" || currentRoute === "Map") {
+      navigation.setOptions({ tabBarStyle: { display: "none" } });
+    } else {
+      navigation.setOptions({ tabBarStyle: { display: "flex" } });
+    }
+  }, [route]);
+
   return (
     <NestedStack.Navigator
       screenOptions={{
-        headerTitleAlign: "center",
         headerTitleAlign: "center",
 
         headerTitleStyle: {

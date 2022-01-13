@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -18,13 +18,17 @@ export const Home = () => {
   return (
     <Tab.Navigator
       initialRouteName="Posts"
-      screenOptions={{ tabBarStyle: { height: 71 } }}
+      screenOptions={{
+        tabBarStyle: { height: 101 },
+        // tabBarHideOnKeyboard: true,
+      }}
     >
       <Tab.Screen
         name="Posts"
         component={PostsScreen}
         options={{
           headerShown: false,
+
           // headerTitleAlign: "center",
           // headerTitle: "Публикации",
           // headerTitleStyle: {
@@ -54,6 +58,7 @@ export const Home = () => {
         component={CreatePostsScreen}
         options={{
           headerShown: false,
+
           // headerTitleAlign: "center",
           // headerTitle: "Создать публикацию",
           // headerTitleStyle: {
@@ -62,7 +67,7 @@ export const Home = () => {
           //   color: "#212121",
           // },
           tabBarShowLabel: false,
-
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ focused, color, size }) => {
             return (
               <View style={style.addButton}>

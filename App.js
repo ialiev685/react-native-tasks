@@ -16,6 +16,7 @@ export default function App() {
   const [isAuth, setIsAuth] = useState(true);
 
   const [loaded] = useFonts({
+    "Inter-Medium": require("./fonts/Inter/Inter-Medium.ttf"),
     "Roboto-Regular": require("./fonts/Roboto/Roboto-Regular.ttf"),
     "Roboto-Medium": require("./fonts/Roboto/Roboto-Medium.ttf"),
     "Roboto-Bold": require("./fonts/Roboto/Roboto-Bold.ttf"),

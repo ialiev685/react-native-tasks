@@ -10,7 +10,7 @@ const initCoords = {
 };
 
 export const MapScreen = ({ route }) => {
-  console.log("map", route.params);
+  // console.log("map", route.params);
   const [coords, setCoords] = useState(initCoords);
 
   useEffect(() => {
