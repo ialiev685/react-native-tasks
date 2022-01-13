@@ -15,6 +15,8 @@ import {
 
 //иконка
 import { AntDesign } from "@expo/vector-icons";
+//нормализация даты
+import { NormalizeDate } from "../../../helpers";
 
 export const CommentsScreen = ({ route, navigation }) => {
   const [picture, setPicture] = useState(null);
@@ -22,10 +24,15 @@ export const CommentsScreen = ({ route, navigation }) => {
   const [text, setText] = useState(null);
 
   const handleSendMessage = () => {
+    const date = NormalizeDate();
+
+    console.log(date);
+
     const msg = {
       id: uuid.v4(),
       text,
       name: "Ilfat Aliev",
+      date,
     };
 
     setMessages((prevState) => [...prevState, msg]);
@@ -40,36 +47,40 @@ export const CommentsScreen = ({ route, navigation }) => {
 
   return (
     <View style={style.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={style.containerPicture}>
-          {picture && <Image style={style.picture} source={{ uri: picture }} />}
-        </View>
-        <View style={style.chatBox}>
-          <FlatList
-            data={messages}
-            keyExtractor={(item, index) => index}
-            renderItem={({ item }) => <Text>{item.text}</Text>}
+      <View style={style.containerPicture}>
+        {picture && <Image style={style.picture} source={{ uri: picture }} />}
+      </View>
+
+      <FlatList
+        style={{ marginTop: 32 }}
+        data={messages}
+        keyExtractor={(item, index) => index}
+        renderItem={({ item }) => (
+          <View style={style.wrapperComment}>
+            <Text style={style.textCommnet}>{item.text}</Text>
+            <Text style={style.textTime}>{item.date}</Text>
+          </View>
+        )}
+      />
+
+      <View style={style.input}>
+        <TextInput
+          style={style.control}
+          value={text}
+          placeholder="Комментировать..."
+          onChangeText={setText}
+          multiline={true}
+          scrollEnabled={true}
+        />
+        <TouchableOpacity style={style.button} onPress={handleSendMessage}>
+          <AntDesign
+            style={style.icon}
+            name="arrowup"
+            size={20}
+            color="#FFFFFF"
           />
-        </View>
-        <View style={style.input}>
-          <TextInput
-            style={style.control}
-            value={text}
-            placeholder="Комментировать..."
-            onChangeText={setText}
-          />
-          <TouchableOpacity style={style.button} onPress={handleSendMessage}>
-            <AntDesign
-              style={style.icon}
-              name="arrowup"
-              size={20}
-              color="#FFFFFF"
-            />
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -79,6 +90,7 @@ const style = StyleSheet.create({
     flex: 1,
 
     marginHorizontal: 16,
+    paddingBottom: 80,
   },
   containerPicture: {
     marginTop: 32,
@@ -96,32 +108,44 @@ const style = StyleSheet.create({
     resizeMode: "cover",
   },
 
-  chatBox: {},
-
   input: {
-    position: "relative",
+    position: "absolute",
+    bottom: 16,
+    left: 0,
+    right: 0,
+
     // flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+
     borderWidth: 1,
-    borderRadius: 100,
+    borderRadius: 40,
     borderColor: "#E8E8E8",
+
+    backgroundColor: "#E8E8E8",
   },
 
   control: {
     width: "100%",
 
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    paddingRight: 50,
+    paddingLeft: 16,
+    paddingRight: 26,
 
     fontFamily: "Inter-Medium",
     fontSize: 16,
-    lineHeight: 19,
+    lineHeight: 16,
     fontStyle: "normal",
+
+    maxHeight: 120,
   },
   button: {
     position: "absolute",
-    top: 11,
-    right: 11,
+    top: "50%",
+    right: 8,
+    // transform: [{ translateY: -10 }],
 
     justifyContent: "center",
     alignItems: "center",
@@ -131,5 +155,34 @@ const style = StyleSheet.create({
     backgroundColor: "#FF6C00",
     borderRadius: 50,
   },
-  icon: {},
+
+  wrapperComment: {
+    flexDirection: "column",
+    textAlign: "right",
+
+    padding: 16,
+
+    backgroundColor: "#E8E8E8",
+
+    borderRadius: 6,
+    borderTopLeftRadius: 0,
+
+    marginBottom: 24,
+  },
+
+  textCommnet: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 13,
+    lineHeight: 18,
+
+    marginBottom: 8,
+  },
+
+  textTime: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 10,
+    lineHeight: 11.72,
+
+    color: "#BDBDBD",
+  },
 });

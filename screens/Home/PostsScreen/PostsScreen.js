@@ -17,7 +17,7 @@ export const PostsScreen = ({ route, navigation }) => {
     if (currentRoute === "Comment" || currentRoute === "Map") {
       navigation.setOptions({ tabBarStyle: { display: "none" } });
     } else {
-      navigation.setOptions({ tabBarStyle: { display: "flex" } });
+      navigation.setOptions({ tabBarStyle: { display: "flex", height: 71 } });
     }
   }, [route]);
 
