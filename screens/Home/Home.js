@@ -57,15 +57,13 @@ export const Home = () => {
         name="CreatePosts"
         component={CreatePostsScreen}
         options={{
-          headerShown: false,
-
-          // headerTitleAlign: "center",
-          // headerTitle: "Создать публикацию",
-          // headerTitleStyle: {
-          //   fontFamily: "Roboto-Medium",
-          //   fontSize: 17,
-          //   color: "#212121",
-          // },
+          headerTitleAlign: "center",
+          headerTitle: "Создать публикацию",
+          headerTitleStyle: {
+            fontFamily: "Roboto-Medium",
+            fontSize: 17,
+            color: "#212121",
+          },
           tabBarShowLabel: false,
           tabBarStyle: { display: "none" },
           tabBarIcon: ({ focused, color, size }) => {
