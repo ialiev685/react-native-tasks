@@ -6,6 +6,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image,
+  Keyboard,
+  TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
 import * as Location from "expo-location";
@@ -38,6 +40,7 @@ export const CreatePostsScreen = ({ navigation }) => {
   const [hasPermissionLibrary, setHasPermissionLibrary] = useState(false);
   const [camera, setCamera] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [showKeyboard, setShowKeyboard] = useState(false);
 
   const isFocused = useIsFocused();
 
@@ -58,6 +61,22 @@ export const CreatePostsScreen = ({ navigation }) => {
       if (status !== "granted") return;
       setHasPermissionLocation(true);
     })();
+  }, []);
+
+  useEffect(() => {
+    const hanldeShowKeyboard = () => {
+      setShowKeyboard(true);
+    };
+
+    const handleHideKeyBoard = () => {
+      setShowKeyboard(false);
+    };
+    Keyboard.addListener("keyboardDidShow", hanldeShowKeyboard);
+    Keyboard.addListener("keyboardDidHide", handleHideKeyBoard);
+    return () => {
+      Keyboard.removeAllListeners("keyboardDidShow", hanldeShowKeyboard);
+      Keyboard.removeAllListeners("keyboardDidHide", handleHideKeyBoard);
+    };
   }, []);
 
   const takePhoto = async () => {
@@ -95,7 +114,6 @@ export const CreatePostsScreen = ({ navigation }) => {
   };
 
   const handleDelete = async () => {
-    console.log("del");
     setData((prevState) => ({ ...prevState, uri: null }));
   };
 
@@ -114,63 +132,67 @@ export const CreatePostsScreen = ({ navigation }) => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={style.container}
-    >
-      {isFocused && (
-        <View style={style.wrapperPhoto}>
-          {data.uri === null ? (
-            <Camera
-              style={style.camera}
-              type={Camera.Constants.Type.back}
-              ref={(ref) => setCamera(ref)}
-              ratio={"4:3"}
-            >
-              <TouchableOpacity onPress={takePhoto}>
-                <View style={style.battonContainer}>
-                  <FontAwesome name="camera" size={20} color="#FFFFFF" />
-                </View>
-              </TouchableOpacity>
-            </Camera>
-          ) : (
-            <View style={style.containerPicture}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={style.container}
+      >
+        {isFocused && (
+          <View
+            style={{ ...style.wrapperPhoto, height: showKeyboard ? 0 : 240 }}
+          >
+            {data.uri === null ? (
+              <Camera
+                style={style.camera}
+                type={Camera.Constants.Type.back}
+                ref={(ref) => setCamera(ref)}
+                ratio={"4:3"}
+              >
+                <TouchableOpacity onPress={takePhoto}>
+                  <View style={style.battonContainer}>
+                    <FontAwesome name="camera" size={20} color="#FFFFFF" />
+                  </View>
+                </TouchableOpacity>
+              </Camera>
+            ) : (
+              // <View style={style.containerPicture}>
               <Image style={style.picture} source={{ uri: data.uri }} />
-            </View>
-          )}
-        </View>
-      )}
-      <Text style={style.textUpload}>
-        {data.uri !== null ? "Редактировать фото:" : "Загрузите фото"}
-      </Text>
-      <TextInput
-        placeholder="Название..."
-        style={style.input}
-        value={data.name}
-        onChangeText={(value) =>
-          setData((prevState) => ({ ...prevState, name: value }))
-        }
-      />
-      <View style={[style.input, style.inputLocation]}>
-        <MapIcon style={style.iconLocation} />
-
+              // </View>
+            )}
+          </View>
+        )}
+        <Text style={style.textUpload}>
+          {data.uri !== null ? "Редактировать фото:" : "Загрузите фото"}
+        </Text>
         <TextInput
-          placeholder="Местность..."
-          value={data.place}
+          placeholder="Название..."
+          style={style.input}
+          value={data.name}
           onChangeText={(value) =>
-            setData((prevState) => ({ ...prevState, place: value }))
+            setData((prevState) => ({ ...prevState, name: value }))
           }
         />
-      </View>
-      <ButtonSubmit
-        text={"Опубликовать"}
-        onClick={handleSend}
-        color={data.uri === null ? "#E8E8E8" : "#FF6C00"}
-      />
-      <TouchableOpacity style={style.buttonDelete} onPress={handleDelete}>
-        <TrashIcon />
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+        <View style={[style.input, style.inputLocation]}>
+          <MapIcon style={style.iconLocation} />
+
+          <TextInput
+            placeholder="Местность..."
+            value={data.place}
+            onChangeText={(value) =>
+              setData((prevState) => ({ ...prevState, place: value }))
+            }
+          />
+        </View>
+        <ButtonSubmit
+          text={"Опубликовать"}
+          onClick={handleSend}
+          color={data.uri === null ? "#E8E8E8" : "#FF6C00"}
+        />
+        <TouchableOpacity style={style.buttonDelete} onPress={handleDelete}>
+          <TrashIcon />
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -196,7 +218,7 @@ const style = StyleSheet.create({
   containerPicture: {
     height: 240,
 
-    marginBottom: 8,
+    // marginBottom: 8,
   },
 
   picture: {

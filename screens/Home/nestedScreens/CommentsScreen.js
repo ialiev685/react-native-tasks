@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import uuid from "react-native-uuid";
 
 import {
@@ -7,10 +7,11 @@ import {
   TextInput,
   StyleSheet,
   Image,
-  ScrollView,
   TouchableOpacity,
   FlatList,
   KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 //иконка
@@ -22,11 +23,35 @@ export const CommentsScreen = ({ route, navigation }) => {
   const [picture, setPicture] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState(null);
+  const [showKeyboard, setShowKeyboard] = useState(false);
+
+  const listCommnets = useRef(null);
+
+  useEffect(() => {
+    if (route.params) {
+      const { uri } = route.params;
+      setPicture(uri);
+    }
+  }, []);
+
+  useEffect(() => {
+    const hanldeShowKeyboard = () => {
+      setShowKeyboard(true);
+    };
+
+    const handleHideKeyBoard = () => {
+      setShowKeyboard(false);
+    };
+    Keyboard.addListener("keyboardDidShow", hanldeShowKeyboard);
+    Keyboard.addListener("keyboardDidHide", handleHideKeyBoard);
+    return () => {
+      Keyboard.removeAllListeners("keyboardDidShow", hanldeShowKeyboard);
+      Keyboard.removeAllListeners("keyboardDidHide", handleHideKeyBoard);
+    };
+  }, []);
 
   const handleSendMessage = () => {
     const date = NormalizeDate();
-
-    console.log(date);
 
     const msg = {
       id: uuid.v4(),
@@ -38,50 +63,49 @@ export const CommentsScreen = ({ route, navigation }) => {
     setMessages((prevState) => [...prevState, msg]);
   };
 
-  useEffect(() => {
-    if (route.params) {
-      const { uri } = route.params;
-      setPicture(uri);
-    }
-  }, []);
-
   return (
-    <View style={style.container}>
-      <View style={style.containerPicture}>
-        {picture && <Image style={style.picture} source={{ uri: picture }} />}
-      </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView style={style.container}>
+        <View
+          style={{ ...style.containerPicture, height: showKeyboard ? 0 : 240 }}
+        >
+          {picture && <Image style={style.picture} source={{ uri: picture }} />}
+        </View>
 
-      <FlatList
-        style={{ marginTop: 32 }}
-        data={messages}
-        keyExtractor={(item, index) => index}
-        renderItem={({ item }) => (
-          <View style={style.wrapperComment}>
-            <Text style={style.textCommnet}>{item.text}</Text>
-            <Text style={style.textTime}>{item.date}</Text>
-          </View>
-        )}
-      />
-
-      <View style={style.input}>
-        <TextInput
-          style={style.control}
-          value={text}
-          placeholder="Комментировать..."
-          onChangeText={setText}
-          multiline={true}
-          scrollEnabled={true}
+        <FlatList
+          ref={listCommnets}
+          onContentSizeChange={() => listCommnets.current.scrollToEnd()}
+          style={{ marginTop: showKeyboard ? 0 : 32 }}
+          data={messages}
+          keyExtractor={(item, index) => index}
+          renderItem={({ item }) => (
+            <View style={style.wrapperComment}>
+              <Text style={style.textCommnet}>{item.text}</Text>
+              <Text style={style.textTime}>{item.date}</Text>
+            </View>
+          )}
         />
-        <TouchableOpacity style={style.button} onPress={handleSendMessage}>
-          <AntDesign
-            style={style.icon}
-            name="arrowup"
-            size={20}
-            color="#FFFFFF"
+
+        <View style={style.input}>
+          <TextInput
+            style={style.control}
+            value={text}
+            placeholder="Комментировать..."
+            onChangeText={setText}
+            multiline={true}
+            scrollEnabled={true}
           />
-        </TouchableOpacity>
-      </View>
-    </View>
+          <TouchableOpacity style={style.button} onPress={handleSendMessage}>
+            <AntDesign
+              style={style.icon}
+              name="arrowup"
+              size={20}
+              color="#FFFFFF"
+            />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
