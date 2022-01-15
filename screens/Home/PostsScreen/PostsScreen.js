@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Image } from "react-native";
 
 // import { View, Text, StyleSheet, FlatList, Image } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -8,6 +9,10 @@ import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { DefaultPostsScreen } from "../nestedScreens";
 import { CommentsScreen } from "../nestedScreens";
 import { MapScreen } from "../nestedScreens";
+
+//икнонка
+import { Feather as LogOut } from "@expo/vector-icons";
+import ArrrowIcon from "../../../components/ArrrowIcon";
 
 const NestedStack = createNativeStackNavigator();
 
@@ -38,17 +43,44 @@ export const PostsScreen = ({ route, navigation }) => {
       <NestedStack.Screen
         name="DefaultPosts"
         component={DefaultPostsScreen}
-        options={{ title: "Публикации" }}
+        options={{
+          title: "Публикации",
+          headerRight: () => (
+            <LogOut
+              style={{ marginRight: 16 }}
+              name="log-out"
+              size={24}
+              color="#BDBDBD"
+              onPress={() => console.log("to Exit")}
+            />
+          ),
+        }}
       />
       <NestedStack.Screen
         name="Comment"
         component={CommentsScreen}
-        options={{ title: "Комментарии" }}
+        options={{
+          title: "Комментарии",
+          headerLeft: () => (
+            <ArrrowIcon
+              style={{ marginLeft: 16 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        }}
       />
       <NestedStack.Screen
         name="Map"
         component={MapScreen}
-        options={{ title: "Карта" }}
+        options={{
+          title: "Карта",
+          headerLeft: () => (
+            <ArrrowIcon
+              style={{ marginLeft: 16 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        }}
       />
     </NestedStack.Navigator>
   );

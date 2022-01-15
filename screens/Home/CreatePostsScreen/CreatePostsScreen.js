@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  ScrollView,
   KeyboardAvoidingView,
   Image,
   TouchableOpacity,
@@ -13,6 +12,9 @@ import * as Location from "expo-location";
 
 //иконка
 import MapIcon from "../../../components/MapIcon";
+import { FontAwesome } from "@expo/vector-icons";
+import TrashIcon from "../../../components/TrashIcon";
+
 //кнопка
 import { ButtonSubmit } from "../../../components/ButtonSubmit";
 
@@ -22,14 +24,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 //место хранения
 import * as MediaLibrary from "expo-media-library";
-//иконка
-import { FontAwesome } from "@expo/vector-icons";
-
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { AfterTakePictureScreen } from "../nestedScreens";
-import { BeforeTakePictureScreen } from "../nestedScreens";
-
-const NestedStack = createNativeStackNavigator();
 
 const initDataPicture = {
   name: "картинка",
@@ -43,14 +37,9 @@ export const CreatePostsScreen = ({ navigation }) => {
   const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
   const [hasPermissionLibrary, setHasPermissionLibrary] = useState(false);
   const [camera, setCamera] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
 
   const isFocused = useIsFocused();
-
-  // useEffect(() => {
-  //   if (route.params) {
-  //     setData((prevState) => ({ ...prevState, uri: route.params.uri }));
-  //   }
-  // }, [route.params]);
 
   useEffect(() => {
     (async () => {
@@ -73,28 +62,41 @@ export const CreatePostsScreen = ({ navigation }) => {
 
   const takePhoto = async () => {
     try {
+      setType(
+        type === Camera.Constants.Type.back
+          ? Camera.Constants.Type.front
+          : Camera.Constants.Type.back
+      );
       const { uri } = await camera.takePictureAsync();
 
       setData((prevState) => ({ ...prevState, uri }));
+
       if (hasPermissionLibrary) {
         await MediaLibrary.createAssetAsync(uri);
       }
-
-      // navigation.navigate("BeforePicture", { uri });
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleSend = async () => {
+    if (!data.uri) return;
+
     if (hasPermissionLocation) {
       const location = await Location.getCurrentPositionAsync({});
-      navigation.goBack();
+
       navigation.navigate("DefaultPosts", { ...data, location });
+      setData(initDataPicture);
       return;
     }
-    navigation.goBack();
+
     navigation.navigate("DefaultPosts", { ...data });
+    setData(initDataPicture);
+  };
+
+  const handleDelete = async () => {
+    console.log("del");
+    setData((prevState) => ({ ...prevState, uri: null }));
   };
 
   if (!hasPermissionCamera) {
@@ -112,75 +114,87 @@ export const CreatePostsScreen = ({ navigation }) => {
   }
 
   return (
-    <ScrollView style={style.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : ""}>
-        {isFocused && (
-          <Camera
-            style={style.camera}
-            type={Camera.Constants.Type.back}
-            ref={(ref) => setCamera(ref)}
-            ratio={"4:3"}
-          >
-            {data.uri && (
-              <View style={style.containerPicture}>
-                <Image style={style.picture} source={{ uri: data.uri }} />
-              </View>
-            )}
-            {!data.uri && (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={style.container}
+    >
+      {isFocused && (
+        <View style={style.wrapperPhoto}>
+          {data.uri === null ? (
+            <Camera
+              style={style.camera}
+              type={Camera.Constants.Type.back}
+              ref={(ref) => setCamera(ref)}
+              ratio={"4:3"}
+            >
               <TouchableOpacity onPress={takePhoto}>
                 <View style={style.battonContainer}>
                   <FontAwesome name="camera" size={20} color="#FFFFFF" />
                 </View>
               </TouchableOpacity>
-            )}
-          </Camera>
-        )}
+            </Camera>
+          ) : (
+            <View style={style.containerPicture}>
+              <Image style={style.picture} source={{ uri: data.uri }} />
+            </View>
+          )}
+        </View>
+      )}
+      <Text style={style.textUpload}>
+        {data.uri !== null ? "Редактировать фото:" : "Загрузите фото"}
+      </Text>
+      <TextInput
+        placeholder="Название..."
+        style={style.input}
+        value={data.name}
+        onChangeText={(value) =>
+          setData((prevState) => ({ ...prevState, name: value }))
+        }
+      />
+      <View style={[style.input, style.inputLocation]}>
+        <MapIcon style={style.iconLocation} />
 
-        <Text style={style.textUpload}>Редактировать фото</Text>
         <TextInput
-          placeholder="Название..."
-          style={style.input}
-          value={data.name}
+          placeholder="Местность..."
+          value={data.place}
           onChangeText={(value) =>
-            setData((prevState) => ({ ...prevState, name: value }))
+            setData((prevState) => ({ ...prevState, place: value }))
           }
         />
-        <View style={[style.input, style.inputLocation]}>
-          <MapIcon style={style.iconLocation} />
-
-          <TextInput
-            placeholder="Местность..."
-            value={data.place}
-            onChangeText={(value) =>
-              setData((prevState) => ({ ...prevState, place: value }))
-            }
-          />
-        </View>
-        <ButtonSubmit text={"Опубликовать"} onClick={handleSend} />
-      </KeyboardAvoidingView>
-    </ScrollView>
+      </View>
+      <ButtonSubmit
+        text={"Опубликовать"}
+        onClick={handleSend}
+        color={data.uri === null ? "#E8E8E8" : "#FF6C00"}
+      />
+      <TouchableOpacity style={style.buttonDelete} onPress={handleDelete}>
+        <TrashIcon />
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
   );
 };
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
-
+    height: "100%",
     marginHorizontal: 16,
+
+    borderRadius: 8,
+
+    paddingTop: 32,
+  },
+
+  wrapperPhoto: {
+    height: 240,
+
+    marginBottom: 8,
 
     borderRadius: 8,
   },
 
   containerPicture: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-
     height: 240,
-
-    borderRadius: 8,
 
     marginBottom: 8,
   },
@@ -193,18 +207,12 @@ const style = StyleSheet.create({
   },
 
   camera: {
-    position: "relative",
-
-    // flex: 1,
     alignItems: "center",
     justifyContent: "center",
 
-    marginTop: 32,
-
-    height: 240,
+    height: "100%",
 
     borderRadius: 8,
-    marginBottom: 8,
   },
 
   battonContainer: {
@@ -243,5 +251,21 @@ const style = StyleSheet.create({
   inputLocation: {
     flexDirection: "row",
     alignItems: "center",
+  },
+
+  buttonDelete: {
+    position: "absolute",
+    bottom: 22,
+    left: "50%",
+    transform: [{ translateX: -35 }],
+
+    width: 70,
+    height: 40,
+
+    backgroundColor: "#E8E8E8",
+    borderRadius: 20,
+
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
