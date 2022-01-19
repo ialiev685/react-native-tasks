@@ -1,31 +1,19 @@
 import React, { useState } from "react";
+//Reactotron
+// import Reactotron from "reactotron-react-native";
+// import("./ReactotronConfig");
+// Reactotron.log("hello world");
 
-//навигация
-import { NavigationContainer } from "@react-navigation/native";
-// import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Main } from "./components/Main";
 
-//шрифты
-import { useFonts } from "expo-font";
-
-//router
-import { Router } from "./screens/Router";
-
-// const Stack = createNativeStackNavigator();
+//redux
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 export default function App() {
-  const [isAuth, setIsAuth] = useState(true);
-
-  const [loaded] = useFonts({
-    "Inter-Medium": require("./fonts/Inter/Inter-Medium.ttf"),
-    "Roboto-Regular": require("./fonts/Roboto/Roboto-Regular.ttf"),
-    "Roboto-Medium": require("./fonts/Roboto/Roboto-Medium.ttf"),
-    "Roboto-Bold": require("./fonts/Roboto/Roboto-Bold.ttf"),
-  });
-
-  const route = Router(isAuth);
-
-  if (!loaded) {
-    return null;
-  }
-  return <NavigationContainer>{route}</NavigationContainer>;
+  return (
+    <Provider store={store}>
+      <Main />
+    </Provider>
+  );
 }
