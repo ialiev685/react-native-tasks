@@ -1,18 +1,87 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { Image } from "react-native";
 
-export const PostsScreen = () => {
+// import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+
+//компоненты
+import { DefaultPostsScreen } from "../nestedScreens";
+import { CommentsScreen } from "../nestedScreens";
+import { MapScreen } from "../nestedScreens";
+
+//икнонка
+import { Feather as LogOut } from "@expo/vector-icons";
+import ArrrowIcon from "../../../components/ArrrowIcon";
+
+const NestedStack = createNativeStackNavigator();
+
+export const PostsScreen = ({ route, navigation }) => {
+  useEffect(() => {
+    const currentRoute = getFocusedRouteNameFromRoute(route);
+    if (currentRoute === "Comment" || currentRoute === "Map") {
+      navigation.setOptions({ tabBarStyle: { display: "none" } });
+    } else {
+      navigation.setOptions({ tabBarStyle: { display: "flex", height: 71 } });
+    }
+  }, [route]);
+
   return (
-    <View style={style.container}>
-      <Text>PostsScreen</Text>
-    </View>
+    <NestedStack.Navigator
+      screenOptions={{
+        headerTitleAlign: "center",
+
+        headerTitleStyle: {
+          fontFamily: "Roboto-Medium",
+          fontSize: 17,
+
+          color: "#212121",
+        },
+      }}
+      initialRouteName={"DefaultPosts"}
+    >
+      <NestedStack.Screen
+        name="DefaultPosts"
+        component={DefaultPostsScreen}
+        options={{
+          title: "Публикации",
+          headerRight: () => (
+            <LogOut
+              style={{ marginRight: 16 }}
+              name="log-out"
+              size={24}
+              color="#BDBDBD"
+              onPress={() => console.log("to Exit")}
+            />
+          ),
+        }}
+      />
+      <NestedStack.Screen
+        name="Comment"
+        component={CommentsScreen}
+        options={{
+          title: "Комментарии",
+          headerLeft: () => (
+            <ArrrowIcon
+              style={{ marginLeft: 16 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        }}
+      />
+      <NestedStack.Screen
+        name="Map"
+        component={MapScreen}
+        options={{
+          title: "Карта",
+          headerLeft: () => (
+            <ArrrowIcon
+              style={{ marginLeft: 16 }}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+        }}
+      />
+    </NestedStack.Navigator>
   );
 };
-
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

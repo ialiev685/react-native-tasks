@@ -1,11 +1,15 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-export const ButtonSubmit = ({ text = "кнопка", onClick }) => {
+export const ButtonSubmit = ({
+  text = "кнопка",
+  onClick,
+  color = "#FF6C00",
+}) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      style={style.button}
+      style={{ ...style.button, backgroundColor: color }}
       onPress={onClick}
     >
       <Text style={style.button__text}>{text}</Text>

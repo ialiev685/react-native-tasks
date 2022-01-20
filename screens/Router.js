@@ -2,7 +2,6 @@ import React from "react";
 // import { View } from "react-native";
 
 //навигация
-
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 //форма регистрации
@@ -30,5 +29,13 @@ export const Router = (isAuth) => {
         />
       </Stack.Navigator>
     );
-  return <Home />;
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
 };

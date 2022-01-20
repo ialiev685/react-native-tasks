@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -9,36 +9,33 @@ import { ProfileScreen } from "./ProfileScreen";
 //иконки
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { Feather as LogOut } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import ArrrowIcon from "../../components/ArrrowIcon";
 
 const Tab = createBottomTabNavigator();
 
-export const Home = () => {
+export const Home = ({ navigation }) => {
   return (
     <Tab.Navigator
       initialRouteName="Posts"
-      screenOptions={{ tabBarStyle: { height: 71 }}}
+      screenOptions={{
+        tabBarStyle: { height: 71 },
+        // tabBarHideOnKeyboard: true,
+
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontFamily: "Roboto-Medium",
+          fontSize: 17,
+          color: "#212121",
+        },
+      }}
     >
       <Tab.Screen
         name="Posts"
         component={PostsScreen}
         options={{
-          tabBarItemStyle: {
-            // width: 40,
-            // height: 40,
-          },
-          headerTitle: "Публикации",
-          headerTitleStyle: {
-            fontFamily: "Roboto-Medium",
-            fontSize: 17,
-
-            color: "#212121",
-          },
-          headerRight: () => <LogOut style={{marginRight:16}} name="log-out" size={24} color="#BDBDBD" onPress={()=>console.log('to Exit')}/>,
+          headerShown: false,
           tabBarShowLabel: false,
-
-          headerTitleAlign: "center",
           tabBarIcon: ({ focused, color, size }) => {
             return <AntDesign name="appstore-o" size={24} color="#4d4d4d" />;
           },
@@ -48,18 +45,16 @@ export const Home = () => {
         name="CreatePosts"
         component={CreatePostsScreen}
         options={{
-          tabBarItemStyle: {
-            // width: 70,
-            // height: 40,
-          },
+          headerLeft: () => (
+            <ArrrowIcon
+              onPress={() => navigation.navigate("Posts")}
+              style={{ marginLeft: 16 }}
+            />
+          ),
+
           headerTitle: "Создать публикацию",
-          headerTitleStyle: {
-            fontFamily: "Roboto-Medium",
-            fontSize: 17,
-            color: "#212121",
-          },
           tabBarShowLabel: false,
-          headerTitleAlign: "center",
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ focused, color, size }) => {
             return (
               <View style={style.addButton}>
@@ -74,13 +69,7 @@ export const Home = () => {
         component={ProfileScreen}
         options={{
           headerTitle: "Профиль",
-          headerTitleStyle: {
-            fontFamily: "Roboto-Medium",
-            fontSize: 17,
-            color: "#212121",
-          },
           tabBarShowLabel: false,
-          headerTitleAlign: "center",
           tabBarIcon: ({ focused, color, size }) => {
             return <Feather name="user" size={24} color="#4d4d4d" />;
           },
