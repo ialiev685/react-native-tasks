@@ -8,7 +8,14 @@ import { useFonts } from "expo-font";
 //router
 import { Router } from "../../screens/Router";
 
+//redux
+import { authSlice } from "../../redux/auth/authReducer";
+import { useSelector } from "react-redux";
+
 export const Main = () => {
+  const state = useSelector((state) => state);
+  console.log("state redux:", state);
+
   const [isAuth, setIsAuth] = useState(true);
 
   const [loaded] = useFonts({
