@@ -10,8 +10,12 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+
 //кнопка
 import { ButtonSubmit } from "../../../components/ButtonSubmit";
+//redux
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRegisterUser } from "../../../redux/auth";
 
 const initFocus = {
   login: "#E8E8E8",
@@ -37,6 +41,8 @@ export const RegistrationScreen = ({ navigation }) => {
   const [data, setData] = useState(initData);
 
   const [dimensions, setDimensions] = useState(initDeminsion);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onChangeDeminsion = () => {
@@ -68,10 +74,11 @@ export const RegistrationScreen = ({ navigation }) => {
     setChangeBorder((prevState) => ({ ...prevState, ...key }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     Keyboard.dismiss();
     setHasFocus(false);
-    console.log(data);
+
+    dispatch(fetchRegisterUser(data));
   };
 
   return (

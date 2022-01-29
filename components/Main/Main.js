@@ -12,11 +12,13 @@ import { Router } from "../../screens/Router";
 import { authSlice } from "../../redux/auth/authReducer";
 import { useSelector } from "react-redux";
 
+//firebase
+
 export const Main = () => {
   const state = useSelector((state) => state);
   console.log("state redux:", state);
 
-  const [isAuth, setIsAuth] = useState(true);
+  const [isAuth, setIsAuth] = useState(false);
 
   const [loaded] = useFonts({
     "Inter-Medium": require("../../fonts/Inter/Inter-Medium.ttf"),
