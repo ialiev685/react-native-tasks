@@ -4,6 +4,7 @@ import {
   fetchRegisterUser,
   fetchLoginUser,
   fetchIsLoginedUser,
+  fetchLogOutUser,
 } from "./authOperation";
 
 const initialState = {
@@ -25,7 +26,6 @@ export const authSlice = createSlice({
       state.token = payload.idToken;
       state.userId = payload.localId;
       state.login = payload.login;
-      // state.logined = true;
     },
 
     [fetchRegisterUser.rejected]: (state, { payload }) => {
@@ -36,8 +36,9 @@ export const authSlice = createSlice({
       state.token = payload.idToken;
       state.userId = payload.localId;
       state.login = payload.displayName;
-      // state.logined = true;
+      state.logined = true;
     },
+
     [fetchLoginUser.rejected]: (state, { payload }) => {
       state.error = payload;
     },
@@ -48,6 +49,11 @@ export const authSlice = createSlice({
 
     [fetchIsLoginedUser.rejected]: (state, { payload }) => {
       state.error = payload;
+      state.logined = false;
+    },
+
+    [fetchLogOutUser.fulfilled]: (state, { payload }) => {
+      return initialState;
     },
   },
 });

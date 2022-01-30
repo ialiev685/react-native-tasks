@@ -14,9 +14,15 @@ import { MapScreen } from "../nestedScreens";
 import { Feather as LogOut } from "@expo/vector-icons";
 import ArrrowIcon from "../../../components/ArrrowIcon";
 
+//redux
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLogOutUser } from "../../../redux/auth";
+
 const NestedStack = createNativeStackNavigator();
 
 export const PostsScreen = ({ route, navigation }) => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const currentRoute = getFocusedRouteNameFromRoute(route);
     if (currentRoute === "Comment" || currentRoute === "Map") {
@@ -51,7 +57,7 @@ export const PostsScreen = ({ route, navigation }) => {
               name="log-out"
               size={24}
               color="#BDBDBD"
-              onPress={() => console.log("to Exit")}
+              onPress={() => dispatch(fetchLogOutUser())}
             />
           ),
         }}

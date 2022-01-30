@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  signOut,
 } from "../../firebase/config";
 
 export const fetchRegisterUser = createAsyncThunk(
@@ -55,11 +56,23 @@ export const fetchIsLoginedUser = createAsyncThunk(
           token: user.accessToken,
           logined: true,
         };
-        console.log("зашел!!!", profile);
+
         return profile;
       }
     } catch (error) {
       console.log("error:", error.message);
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchLogOutUser = createAsyncThunk(
+  "user/logOut",
+  async (__, thunkApi) => {
+    try {
+      await signOut(authKey);
+      return;
+    } catch (error) {
       return thunkApi.rejectWithValue(error.message);
     }
   }

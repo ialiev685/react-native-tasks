@@ -26,9 +26,7 @@ export const Main = () => {
     dispatch(fetchIsLoginedUser());
   }, [logined]);
 
-  console.log("log", logined);
-
-  const [isAuth, setIsAuth] = useState(false);
+  // const [isAuth, setIsAuth] = useState(false);
 
   const [loaded] = useFonts({
     "Inter-Medium": require("../../fonts/Inter/Inter-Medium.ttf"),
@@ -37,7 +35,7 @@ export const Main = () => {
     "Roboto-Bold": require("../../fonts/Roboto/Roboto-Bold.ttf"),
   });
 
-  const route = Router(isAuth);
+  const route = Router(logined);
 
   if (!loaded) {
     return null;
