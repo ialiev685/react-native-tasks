@@ -1,12 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 //asyncThunk
-import { fetchRegisterUser } from "./authOperation";
+import {
+  fetchRegisterUser,
+  fetchLoginUser,
+  fetchIsLoginedUser,
+} from "./authOperation";
 
 const initialState = {
-  email: null,
   login: null,
   userId: null,
   token: null,
+  logined: false,
   error: null,
 };
 
@@ -18,16 +22,32 @@ export const authSlice = createSlice({
   // },
   extraReducers: {
     [fetchRegisterUser.fulfilled]: (state, { payload }) => {
-      console.log("action", payload);
-      state.email = payload.email;
       state.token = payload.idToken;
       state.userId = payload.localId;
       state.login = payload.login;
+      // state.logined = true;
     },
 
-    [fetchRegisterUser.rejected]: (state, action) => {
-      console.log("error", action.payload);
-      // state.error = action
+    [fetchRegisterUser.rejected]: (state, { payload }) => {
+      state.error = payload;
+    },
+
+    [fetchLoginUser.fulfilled]: (state, { payload }) => {
+      state.token = payload.idToken;
+      state.userId = payload.localId;
+      state.login = payload.displayName;
+      // state.logined = true;
+    },
+    [fetchLoginUser.rejected]: (state, { payload }) => {
+      state.error = payload;
+    },
+
+    [fetchIsLoginedUser.fulfilled]: (state, { payload }) => {
+      return { ...state, ...payload };
+    },
+
+    [fetchIsLoginedUser.rejected]: (state, { payload }) => {
+      state.error = payload;
     },
   },
 });

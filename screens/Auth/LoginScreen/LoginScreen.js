@@ -12,6 +12,9 @@ import {
 import React, { useState, useEffect } from "react";
 //кнопка
 import { ButtonSubmit } from "../../../components/ButtonSubmit";
+//redux
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLoginUser } from "../../../redux/auth";
 
 const initFocus = {
   email: "#E8E8E8",
@@ -35,6 +38,8 @@ export const LoginScreen = ({ navigation }) => {
   const [data, setData] = useState(initData);
 
   const [dimensions, setDimensions] = useState(initDeminsion);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onChangeDeminsion = () => {
@@ -68,7 +73,8 @@ export const LoginScreen = ({ navigation }) => {
   const handleSubmit = () => {
     Keyboard.dismiss();
     setHasFocus(false);
-    console.log(data);
+
+    dispatch(fetchLoginUser(data));
   };
 
   return (

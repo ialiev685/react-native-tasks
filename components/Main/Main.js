@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 //навигация
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -9,14 +9,24 @@ import { useFonts } from "expo-font";
 import { Router } from "../../screens/Router";
 
 //redux
-import { authSlice } from "../../redux/auth/authReducer";
-import { useSelector } from "react-redux";
+import { fetchIsLoginedUser, getStateLogined } from "../../redux/auth";
+import { useSelector, useDispatch } from "react-redux";
 
 //firebase
+// import { authKey, onAuthStateChanged } from "../../firebase/config";
 
 export const Main = () => {
   const state = useSelector((state) => state);
   console.log("state redux:", state);
+  const dispatch = useDispatch();
+
+  const { logined } = useSelector(getStateLogined);
+
+  useEffect(() => {
+    dispatch(fetchIsLoginedUser());
+  }, [logined]);
+
+  console.log("log", logined);
 
   const [isAuth, setIsAuth] = useState(false);
 
